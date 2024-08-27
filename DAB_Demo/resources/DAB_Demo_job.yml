@@ -1,0 +1,36 @@
+# The main job for DAB_Demo.
+resources:
+  jobs:
+    DAB_Demo_job:
+      name: DAB_Demo_job
+
+      schedule:
+        # Run every day at 8:37 AM
+        quartz_cron_expression: '44 37 8 * * ?'
+        timezone_id: Europe/Amsterdam
+
+      email_notifications:
+        on_failure:
+          - nathan@datasurge.com
+
+      tasks:
+        - task_key: hello_world
+          job_cluster_key: job_cluster
+          notebook_task:
+            notebook_path: ../src/DAB_Demo/hello_world.py
+        
+        # - task_key: goodbye_world
+        #   job_cluster_key: job_cluster
+        #   depends_on:
+        #     - task_key: hello_world
+        #   notebook_task:
+        #     notebook_path: ../src/DAB_Demo/goodbye_world.py
+
+      job_clusters:
+        - job_cluster_key: job_cluster
+          new_cluster:
+            spark_version: 13.3.x-scala2.12
+            node_type_id: i3.xlarge
+            autoscale:
+                min_workers: 1
+                max_workers: 1
